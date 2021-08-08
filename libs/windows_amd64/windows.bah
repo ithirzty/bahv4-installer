@@ -1,0 +1,403 @@
+#include "<string.h>"
+#include "<windows.h>"
+#include "<wingdi.h>"
+#cLib "lgdi32"
+
+#define! LRESULT int
+#define! UINT uint32
+#define! WPARAM ulong
+#define! LPARAM long
+#define! LPSTR pstring
+#define! WNDPROC LRESULT
+#define! HANDLE ptr
+#define! HICON ptr
+#define! RECT point
+#define! HCURSOR HICON
+#define! HBRUSH int
+#define! LPCTSTR cpstring
+#define! DWORD uint
+#define! HDC ptr
+#define! WINBOOL int32
+#define! ATOM uint32
+
+#define BYTE32 cpstring[32]
+
+
+struct HWND_tag {
+    unused: int32
+}
+#define! HWND HWND_tag
+
+struct POINT {
+    x: int
+    y: int
+}
+
+struct HINSTANCE_tag {
+    unused: int32
+}
+#define! HINSTANCE HINSTANCE_tag
+struct MSG {
+    hwnd: HWND
+    message: UINT
+    wParam: WPARAM
+    lParam: LPARAM
+    time: DWORD
+    pt: POINT
+}
+
+struct WNDCLASSEX {
+    cbSize: UINT
+    style: UINT
+    lpfnWndProc: WNDPROC
+    cbClsExtra: int32
+    cbWndExtra: int32
+    hInstance: HANDLE
+    hIcon: HICON
+    hCursor: HCURSOR
+    hbrBackground: HBRUSH
+    lpszMenuName: LPCTSTR
+    lpszClassName: LPCTSTR
+    hIconSm: HICON
+}
+
+struct RECT_tag {
+    left: int
+    top: int
+    right: int
+    bottom: int   
+}
+
+struct! RGBQUAD {
+    rgbBlue: int32
+    rgbGreen: int32
+    rgbRed: int32
+    rgbReserved: int32
+}
+
+struct! BITMAPINFOHEADER {
+    biSize: int32
+    biWitdth: int
+    biHeight: int
+    biPlanes: int32
+    biBitCount: int32
+    biCompression: int32
+    biSizeImage: int32
+    biXPelsPerMeters: int
+    biYPelsPerMeters: int
+    biCrlUsed: int32
+    biClrImportant: int32
+}
+
+struct! BITMAPINFO {
+    bmiHeader: BITMAPINFOHEADER
+    bmiColors: RGBQUAD[1]
+}
+
+struct PAINTSTRUCT {
+    hdc: HDC
+    fErase: WINBOOL
+    rcPaint: RECT
+    fRestore: WINBOOL
+    fIncUpdate: WINBOOL
+    rgbReserved: BYTE32
+}
+
+GLOBAL_hInstance HINSTANCE
+GLOBAL_hPrevInstance HINSTANCE
+GLOBAL_lpCmdLine LPSTR
+GLOBAL_nCmdShow int32
+
+#define! HBITMAP ptr
+
+// struct buffer {
+//     bmi: BITMAPINFO
+
+//     create(width int, height int) {
+//         b = this->bmi
+//         b.biSize int32 = sizeof(BITMAPINFOHEADER)
+//         b.biWidth = width
+//         b.biHeight = height
+//         b.biPlanes = 1
+//         b.biBitCount = 32
+//         b.biCompression = 0
+//         hDesktopDC HDC = GetDC(GetDesktopWindow())
+        
+//         hDib HBITMAP = CreateDIBSection(hDesktopDC, &b, 0, *bPtr)
+//     }
+
+// }
+
+struct control {
+    id: HWND
+    type: string
+    
+    //basic commands
+
+    move(x int, y int, width int, height int) {
+        SetWindowPos(this->id, 0, x, y, width, height, 0)
+    }
+
+    destroy() {
+        DestroyWindow(this->id)
+        s int32 = sizeof(this)
+        memset(this, 0, s)
+    }
+
+    style(style int) {
+        oldStyle int = GetWindowLong(this->id, -20)
+        style = oldStyle + style 
+        SetWindowLongA(this->id, -20, style)
+    }
+
+    //io commands
+    
+    setText(text string) {
+        SetWindowText(this->id, text.content)
+    }
+
+    getText() string {
+        len int32 = GetWindowTextLength(this->id)
+        text char[len+1]
+        GetWindowText(this->id, &text[0], len+1)
+        res = string{}
+        res.set(text)
+        return res
+    }
+
+    //fetching info
+
+    getWidth() int {
+        rect = RECT_tag{}
+        GetWindowRect(this->id, &rect)
+        width = rect.right - rect.left
+        return width
+    }
+
+    getHeight() int {
+        rect = RECT_tag{}
+        GetWindowRect(this->id, &rect)
+        height = rect.bottom - rect.top
+        return height
+    }
+
+}
+
+struct color {
+    r: int
+    g: int
+    b: int
+}
+
+//popup icons
+BWL_ICON_QUESTION = 32
+BWL_ICON_WARNING = 48
+BWL_ICON_INFO = 64
+
+//popup btns layout
+BWL_POPUP_ABORT_RETRY_IGNORE = 2
+BWL_POPUP_CANCEL_TRY_CONTINUE = 6
+BWL_POPUP_HELP = 16384
+BWL_POPUP_OK = 0
+BWL_POPUP_OK_CANCEL = 1
+BWL_POPUP_RETRY_CANCEL = 5
+BWL_POPUP_YES_NO = 4
+BWL_POPUP_YES_NO_CANCEL = 3
+
+struct BWL_WINDOW {
+    ps: PAINTSTRUCT
+    hdc: HDC
+    hwnd: HWND
+    param: LPARAM
+    hInstance: HINSTANCE
+    name: string
+
+    //basic commands
+
+    clear() {
+        FillRect(this->hdc, &this->ps.rcPaint, 0)
+    }
+
+    fill(c color, left int, top int, right int, bottom int) {
+        rect = RECT_tag{left, top, right, bottom}
+        b HBRUSH = CreateSolidBrush(RGB(c.r, c.g, c.b))
+        FillRect(this->hdc, &rect, b)
+        DeleteObject(b)
+    }
+
+    redraw() {
+        InvalidateRect(this->hwnd, 0, 1)
+    }
+
+    send(msg int) {
+        SendMessage(this->hwnd, msg, 0, 0)
+    }
+
+    setMaxSize(width int, height int) {
+        //todo
+    }
+
+    //io commands
+
+    text(text string, left int, top int, right int, bottom int, style int) {
+        rect = RECT_tag{left, top, right, bottom}
+        len int = text.length
+        DrawText(this->hdc, text.content, len, &rect, style)
+    }  
+
+    //controls
+
+    button(title string, x int, y int, width int, height int, argStyle int) control {
+        r HWND = CreateWindow("button", title.content, 1342177281 + argStyle, x, y, width, height, this->hwnd, 0, this->hInstance, 0)
+        SendMessage(r, 273, 0, 0)
+        c = control{r, "button"}
+        return c
+    }
+
+    label(title string, x int, y int, width int, height int, argStyle int) control {
+        r HWND = CreateWindow("static", title.content, 1342177280 + argStyle, x, y, width, height, this->hwnd, 0, this->hInstance, 0)
+        c = control{r, "label"}
+        return c
+    }
+
+    input(title string, x int, y int, width int, height int, argStyle int) control {
+        //1342177281 + 8388608
+        //visible      border
+        style = 1350565889 + argStyle
+        r HWND = CreateWindow("edit", title.content, style, x, y, width, height, this->hwnd, 0, this->hInstance, 0)
+        c = control{r, "input"}
+        return c
+    }
+
+    popup(title string, msg string, btn int, icon int) control {
+        r HWND = MessageBox(this->hwnd, msg.content, title.content, btn+icon)
+        c = control{r, "popup"}
+        return c
+    }
+
+    //fetching infos
+
+    getWidth() int {
+        rect = RECT_tag{}
+        GetWindowRect(this->hwnd, &rect)
+        width = rect.right - rect.left
+        return width
+    }
+
+    getHeight() int {
+        rect = RECT_tag{}
+        GetWindowRect(this->hwnd, &rect)
+        height = rect.bottom - rect.top
+        return height
+    }
+
+}
+
+
+g_szClassName LPCTSTR = "myWindowClass"
+
+BWL_CLOSE = 0
+BWL_DESTROY = 1
+BWL_PAINT = 2
+BWL_CREATE = 3
+BWL_COMMAND = 4
+BWL_RESIZE = 5
+
+BWL_TOP = 0
+BWL_LEFT = 0
+BWL_RIGHT = 2
+BWL_BOTTOM = 8
+BWL_CENTER = 1
+BWL_VERTICAL_CENTER = 4
+BWL_TEXT_WRAP = 16
+
+//BWL_V_SCROLL = 2097152
+//BWL_H_SCROLL = 1048576
+
+WndProc(hwnd HWND, msg UINT, wParam WPARAM, lParam LPARAM) LRESULT CALLBACK {
+    m LRESULT
+
+    window = BWL_WINDOW{}
+    window.hwnd = hwnd
+    window.param = lParam
+
+    if msg == 16 {
+        BWL_Events(window, BWL_CLOSE)
+        DestroyWindow(hwnd)
+    } else if msg == 1 {
+        BWL_Events(window, BWL_CREATE)
+    } else if msg == 2 {
+        BWL_Events(window, BWL_DESTROY)
+        PostQuitMessage(0)
+    } else if msg == 273 {
+        BWL_Events(window, BWL_COMMAND)
+    } else if msg == 15 {
+        ps PAINTSTRUCT
+        hdc HDC = BeginPaint(hwnd, &ps)
+        window.ps = ps
+        window.hdc = hdc
+        BWL_Events(window, BWL_PAINT)
+        EndPaint(hwnd, &ps)
+    } else if msg == 14 {
+        return 1
+    } else if msg == 5 {
+        BWL_Events(window, BWL_RESIZE)
+    } else {
+        m = DefWindowProc(hwnd, msg, wParam, lParam)
+        return m
+    }
+
+    return m
+}
+
+
+
+WinMain(hInstance HINSTANCE, hPrevInstance HINSTANCE, lpCmdLine LPSTR, nCmdShow int32) int32 WINAPI {
+
+    GLOBAL_hInstance = hInstance
+    GLOBAL_hPrevInstance = hPrevInstance
+    GLOBAL_lpCmdLine = lpCmdLine
+    GLOBAL_nCmdShow = nCmdShow
+    
+    BWL_Main()
+    
+    m int32 = 0
+    return m
+}
+
+BWL_CreateWindow(width int, height int, title string) {
+    
+    wc WNDCLASSEX
+    hwnd HWND
+    Msg MSG
+
+    wc.cbSize        = sizeof(WNDCLASSEX)
+    wc.style         = 0
+    wc.lpfnWndProc   = WndProc
+    wc.cbClsExtra    = 0
+    wc.cbWndExtra    = 0
+    wc.hInstance     = GLOBAL_hInstance
+    wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION)
+    wc.hCursor       = LoadCursor(NULL, IDC_ARROW)
+    wc.hbrBackground = 0
+    wc.lpszMenuName  = 0
+    wc.lpszClassName = g_szClassName
+    wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION)
+
+    rc ATOM = RegisterClassEx(&wc)
+    if rc == 0 {
+        panic(string("Registration failed."))
+    }
+
+    hwnd = CreateWindowEx(WS_EX_CLIENTEDGE,g_szClassName,title.content,WS_OVERLAPPEDWINDOW,CW_USEDEFAULT, CW_USEDEFAULT, width, height,NULL, NULL, GLOBAL_hInstance, NULL)
+
+    ShowWindow(hwnd, GLOBAL_nCmdShow)
+    UpdateWindow(hwnd)
+
+    mg int = GetMessage(&Msg, NULL, 0, 0)
+    for mg > 0 {
+        TranslateMessage(&Msg)
+        DispatchMessage(&Msg)
+        mg = GetMessage(&Msg, NULL, 0, 0)
+    }
+}

@@ -1,0 +1,32 @@
+#include "<stdlib.h>"
+#include "time.bah"
+#include "iostream.bah"
+
+#define srand(i int)
+#define rand() int
+RAND_SEEDED = 0
+
+seedRandom(i int) {
+    srand(i)
+    RAND_SEEDED = 1
+}
+
+randomInRange(min int, max int) int {
+    if RAND_SEEDED == 0 {
+        srand(time(0))
+        RAND_SEEDED = 1
+    }
+
+    range = max - min
+    i = rand() % range + 1
+
+    i = i + min
+
+    return i
+}
+
+cryptoRand() int {
+    i = 0
+    rand_s(&i)
+    return i
+}

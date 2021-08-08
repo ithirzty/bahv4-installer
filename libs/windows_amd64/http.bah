@@ -1,0 +1,217 @@
+#include "<string.h>"
+#include "<windows.h>"
+#include "<winsock.h>"
+#include "<winsock2.h>"
+
+#cLib "lwsock32"
+
+
+#define! SOCKET ptr
+
+struct! in_addr {
+    s_addr: uint
+}
+
+struct! sockaddr_in {
+    sin_family: int
+    sin_port: uint
+    sin_addr: in_addr
+    sin_zero: char[8]
+}
+
+#define! SOCKADDR_IN sockaddr_in
+#define! WSADATA struct
+
+struct! hostent {
+    h_name: cpstring
+    h_aliases: cpstring
+    h_addrtype: int32
+    h_length: int32
+    h_addr: uint
+    h_addr_list: cpstring
+}
+#define HOSTSENT hostent
+
+struct http_url {
+    path: string
+    host: string
+    proto: string
+}
+
+parseUrl(s string) http_url {    
+    u = new http_url
+    
+    //get protocol
+    i = 0
+    max = s.length - 1
+    hasProto = 0
+    for i<s.length {
+        if s.content[i] == ':' {
+            hasProto = 1
+            break
+        }
+        i = i + 1
+    }
+    if hasProto {
+    proto char[8]
+    i = 0
+    for s.content[i] != ':' {
+        proto[i] = s.content[i]       
+        i = i + 1
+    }
+    i = i + 1
+    proto[i-1] = 0
+    u.proto = string(proto)
+    } else {
+        i = 0
+    }
+    for s.content[i] == '/' {
+        if i == max {
+            break
+        }
+        i = i + 1
+    }
+
+    //get host
+    hn char[256]
+    hni = 0
+    for s.content[i] != '/' {
+        hn[hni] = s.content[i]
+        hni = hni + 1
+        if i == max {
+            break
+        }
+        i = i + 1
+    }
+    hn[hni] = 0
+    u.host = string(hn)
+
+    if i == max {
+        u.path = string("/")
+        return *u
+    }
+
+    path char[s.length-i+1]
+    pi = 0
+    for i<=max {
+        path[pi] = s.content[i]
+        i = i + 1
+        pi = pi + 1
+    }
+    path[pi] = 0
+    u.path = string(path)
+
+    return *u
+}
+
+get(u http_url) string {
+
+    get_http = string("GET ")
+    get_http.append(u.path.content)
+    get_http.append(" HTTP/1.1\r\nHost: ")
+    get_http.append(u.host.content)
+    get_http.append("\r\nConnection: close\r\n\r\n")
+
+    wsaData WSADATA
+    Socket SOCKET
+    SockAddr = sockaddr_in{}
+    lineCount = 0
+    rowCount = 0
+    *host = hostent{}
+    buffer char[10000]
+    i = 0
+    nDataLength int
+    response = new string
+    response.set("")
+
+    isWSAstarted int = WSAStartup(MAKEWORD(2,2), &wsaData)
+
+    if isWSAstarted != 0 {
+        panic(string("WSA startup failed."))
+    }
+
+    Socket = socket(2, 1, 6)
+    host = gethostbyname(u.host.content)
+
+    SockAddr.sin_port=htons(80)
+    SockAddr.sin_family=2
+    *ha uint = host.h_addr
+    SockAddr.sin_addr.s_addr = *ha
+
+     canConnect int = connect(Socket,&SockAddr,sizeof(SockAddr))
+
+    if canConnect < 0 {
+        close(Socket)
+    }
+    sHttp = get_http.length
+    send(Socket,get_http.content, sHttp,0)
+
+    nDataLength = recv(Socket,buffer,10000,0)
+
+    for nDataLength > 0 {
+        response.appendString(string(buffer))
+        nDataLength = recv(Socket,buffer,10000,0)
+    }
+
+    closesocket(Socket)
+    WSACleanup()
+
+    return *response
+}
+
+post(u http_url, args string) string {
+
+    get_http = string("POST ")
+    get_http.append(u.path.content)
+    args.prepend("?")
+    get_http.appendString(args)
+    get_http.append(" HTTP/1.1\r\nHost: ")
+    get_http.append(u.host.content)
+    get_http.append("\r\nConnection: close\r\n\r\n")
+
+    wsaData WSADATA
+    Socket SOCKET
+    SockAddr = sockaddr_in{}
+    lineCount = 0
+    rowCount = 0
+    *host = hostent{}
+    buffer char[10000]
+    i = 0
+    nDataLength int
+    response = new string
+    response.set("")
+
+    isWSAstarted int = WSAStartup(MAKEWORD(2,2), &wsaData)
+
+    if isWSAstarted != 0 {
+        panic(string("WSA startup failed."))
+    }
+
+    Socket = socket(2, 1, 6)
+    host = gethostbyname(u.host.content)
+
+    SockAddr.sin_port=htons(80)
+    SockAddr.sin_family=2
+    *ha uint = host.h_addr
+    SockAddr.sin_addr.s_addr = *ha
+
+     canConnect int = connect(Socket,&SockAddr,sizeof(SockAddr))
+
+    if canConnect < 0 {
+        close(Socket)
+    }
+    sHttp = get_http.length
+    send(Socket,get_http.content, sHttp,0)
+
+    nDataLength = recv(Socket,buffer,10000,0)
+
+    for nDataLength > 0 {
+        response.appendString(string(buffer))
+        nDataLength = recv(Socket,buffer,10000,0)
+    }
+
+    closesocket(Socket)
+    WSACleanup()
+
+    return *response
+}

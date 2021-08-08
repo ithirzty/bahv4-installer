@@ -1,0 +1,18 @@
+#include "<signal.h>"
+#include "memory.bah"
+
+//Will return the length of an array.
+//This only works on arrays.
+len(a ptr) int {
+    i int
+    noCheck(array(void*) * arr = a)
+    noCheck(i = arr->length)
+    return i
+}
+
+#define signal(sig int, hdl ptr)
+
+#macro a++ => a = a + 1
+#macro a += b* => a = a + b
+#macro a-- => a = a - 1
+#macro a -= b* => a = a - b
