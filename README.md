@@ -10,7 +10,7 @@ Bah is for the moment compatible with the following:
 ## Installation
 To install bah on your machine, do the following
 
-#### Linux
+### Linux
 
 ```sh
 git clone https://github.com/ithirzty/bahv4-installer
@@ -24,6 +24,14 @@ Comming soon
 
 ### Macos
 Comming soon
+
+## Updating bah
+To update bah, do the following
+
+### Linux
+```sh
+./update_linux.sh
+```
 
 ## Dev branch (with the source code)
 The dev branch is not yet available to the public.
