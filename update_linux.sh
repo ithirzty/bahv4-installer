@@ -9,9 +9,7 @@ fi
 
 #get package manager and installing dependencies
 
-rm -r ./bahv4-installer
-git clone https://github.com/ithirzty/bahv4-installer
-cd ./bahv4-installer
+git pull origin main
 
 if command -v apt &> /dev/null
 then
