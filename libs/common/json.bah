@@ -104,7 +104,7 @@ parseJson(a cpstring) jsonElement* {
                 continue
             }
             if c == ',' {
-                jsonElem.children[elemIndex] = parseJson(arrToStr(currentElem))
+                jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
                 clear(currentElem)
                 elemIndex = elemIndex + 1
             } else {
@@ -116,7 +116,7 @@ parseJson(a cpstring) jsonElement* {
             }
             i = i + 1
         }
-        jsonElem.children[elemIndex] = parseJson(arrToStr(currentElem))
+        jsonElem.children[elemIndex] = parseJson(arrAsStr(currentElem))
     } else if jsonElem.type == JSON_TYPE_MAP {
         s.trimLeft(1)
         s.trimRight(1)

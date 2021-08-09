@@ -147,9 +147,9 @@ parseMarkdownInline(l string) string {
                     appendCharArr(nl, linkName)
                     appendCharArr(nl, strToArr("\">"))
                     // nl.append("<img src=\"")
-                    // nl.append(arrToStr(linkUrl))
+                    // nl.append(arrAsStr(linkUrl))
                     // nl.append("\" alt=\"")
-                    // nl.append(arrToStr(linkName))
+                    // nl.append(arrAsStr(linkName))
                     // nl.append("\">")
 
                     isImage = 0
@@ -160,9 +160,9 @@ parseMarkdownInline(l string) string {
                     appendCharArr(nl, linkName)
                     appendCharArr(nl, strToArr("</a>"))
                     // nl.append("<a href=\"")
-                    // nl.append(arrToStr(linkUrl))
+                    // nl.append(arrAsStr(linkUrl))
                     // nl.append("\">")
-                    // nl.append(arrToStr(linkName))
+                    // nl.append(arrAsStr(linkName))
                     // nl.append("</a>")
                 }
                 isLink = 0
@@ -272,7 +272,7 @@ parseMarkdownInline(l string) string {
         i++
     }
 
-    r = string(arrToStr(nl))
+    r = string(arrAsStr(nl))
 
     return r
 }

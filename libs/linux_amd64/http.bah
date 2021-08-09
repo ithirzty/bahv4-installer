@@ -615,6 +615,10 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
         nDataLength = recv(sockfd,buffer,1024,0)
         for nDataLength > 0 {
             response.append(buffer)
+            if nDataLength < 1024 {
+                trimAmm = 1024 - nDataLength
+                response.trimRight(trimAmm)
+            }
             nDataLength = recv(sockfd,buffer,1024,0)
         }
 

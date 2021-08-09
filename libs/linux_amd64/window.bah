@@ -235,7 +235,7 @@ struct graphicApp {
         font = XLoadQueryFont(this.d, name)
         if font != 0 {
             this.currentFont = font
-            XSetFont(this.d, this.gc, font.fid)
+            //XSetFont(this.d, this.gc, font.fid)
         } else {
             error = string("window: cannot find font ")
             error.append(name)

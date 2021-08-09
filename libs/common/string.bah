@@ -110,6 +110,10 @@ struct string {
     append(s cpstring) {
         this.length = this.length + strlen(s)
         tmpS cpstring = memoryRealloc(this->content, this->length)
+        if tmpS == 0 {
+            tmpS = memoryAlloc(this->length)
+            strncpy(tmpS, this->content, this->length)
+        }
         strcat(tmpS, s)
         this.content = tmpS
     }
@@ -145,8 +149,7 @@ struct string {
 
     //Used for getting the content of the string as a cpstring.
     str() cpstring {
-        r cpstring = memoryAlloc(this.length+1)
-        strcpy(r,this.content)
+        r = this.content
         return r
     }
 
@@ -160,8 +163,7 @@ struct string {
         si = 0
         replcBuff = string{}
         replcBuff.set("")
-        buff = string{}
-        buff.set("")
+        buff = []char
         for i < this.length {
             
             c = this.charAt(i)
@@ -174,22 +176,29 @@ struct string {
             } else {
                 if replcBuff.length > 0 {
                     si = 0
-                    buff.append(replcBuff.content)
+                    ii = 0; for ii < replcBuff.length {
+                        buff[len(buff)] = replcBuff.charAt(ii)
+                        ii = ii + 1
+                    }
                     replcBuff.set("")
                 }
-                cs = charToString(c)
-                buff.append(cs)
+                buff[len(buff)] = c
             }
 
             if si == needle.length {
                 replcBuff.set("")
-                buff.append(repl.content)
+                ii = 0; for ii < repl.length {
+                    buff[len(buff)] = repl.charAt(ii)
+                    ii = ii + 1
+                }
                 si = 0
             }
 
             i = i + 1
         }
-        this.set(buff.content)
+        r cpstring
+        noCheck(r = buff->data)
+        this.set(r)
     }
 
     //Used to count the number of substring(s).
@@ -327,6 +336,16 @@ strToArr(str cpstring) []char {
     noCheck(memcpy(arr->data, str, strLen))
     noCheck(arr->length = strLen)
     return arr
+}
+
+//Used to get a pointer to an array data as a cpstring.
+//Unlike arrToStr, this does not copy the content of the array to a cpstring.
+//This is faster but changing the content of the returnend cpstring will change the content of the array.
+//You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
+arrAsStr(arr []char) cpstring {
+    r cpstring
+    noCheck(r = arr->data)
+    return r
 }
 
 //Used to convert an integer into a string.
