@@ -196,3 +196,18 @@ struct flags {
     }
 
 }
+
+//Example
+//#include "iostream.bah"
+//#include "flags.bah"
+// main(args []cpstring) {
+//     flags = flags{}
+//     flags.addString("name", "Your name")
+//     flags.parse(args)
+//     if flags.isSet("name") == 0 {
+//         flags.invalidate()
+//     }
+//     print("Your name is: ")
+//     name = flags.get("name")
+//     println(name)
+// }

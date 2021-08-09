@@ -15,6 +15,7 @@ appendCharArr(a []char, b []char) {
 struct markdownLine {
     line: string*
     type: int = 0
+    rel: string
 }
 
 //A wrapper for the markdown parser.
@@ -51,10 +52,10 @@ struct markdown {
 
             if mdl.type == 1 {
                 l.prepend("<h1>")
-                l.append("</h1>")
+                l.append("</h1><hr>")
             } else if mdl.type == 2 {
                 l.prepend("<h2>")
-                l.append("</h2>")
+                l.append("</h2><hr>")
             } else if mdl.type == 3 {
                 l.prepend("<h3>")
                 l.append("</h3>")
@@ -75,6 +76,13 @@ struct markdown {
             } else if mdl.type == 9 {
                 l.prepend("<blockquote>")
                 l.append("</blockquote>")
+            } else if mdl.type == 10 {
+                ftag = string("<pre class=\"highlight highlight-source-")
+                ftag.append(mdl.rel)
+                ftag.append("\">")
+                l.prepend(ftag)
+                l.append("</pre>")
+
             } else {
                 //l.prepend("<p>")
                 l.append("</br>")
@@ -278,13 +286,41 @@ parseMarkdown(a cpstring) markdown {
     
     i = 0; for i < len(lines) {
         l = lines[i]
-        l.trim()
-        l = parseMarkdownInline(l)
         nl = new string
 
         ml = new markdownLine
+        if l.count("```") > 0 {
+            starts = 1
+            lineParts = splitString(l, "```")
+            if len(lineParts) > 0 {
+                ml.rel = lineParts[1]
+            } else {
+                ml.rel = string("")
+            }
+            ml.type = 10
+            nl.set("")
+            i=i+1;for i < len(lines) {
+                ll = lines[i]
+                if ll.count("```") > 0 {
+                    break
+                }
 
-        if l.hasPrefix("# ") {
+                ll.append("\n")
+                nl.append(ll)
+
+                i = i + 1
+            }
+
+            ml.line = nl
+            m.lines[len(m.lines)] = ml
+            i = i + 1
+            continue
+        }
+
+        l.trim()
+        l = parseMarkdownInline(l)
+        
+         if l.hasPrefix("# ") {
             ml.type = 1
             nl.set(l)
             nl.trimLeft(2)
@@ -331,8 +367,7 @@ parseMarkdown(a cpstring) markdown {
             }
         
         ml.line = nl
-        mll = len(m.lines)
-        m.lines[mll] = ml
+        m.lines[len(m.lines)] = ml
         
         i++
     }
@@ -346,9 +381,10 @@ parseMarkdown(a cpstring) markdown {
 escapeMarkdownHTML(s string*) {
     s.replace("*", "&ast;")
     s.replace(">", "&gt;")
-    s.replace("__", "&#95;&#95;")
-    s.replace("-", "&#45;")
-    s.replace("#", "&#35;")
+    s.replace("<", "&lt;")
+    s.replace("__", "&lowbar;&lowbar;")
+    s.replace("-", "&minus;")
+    s.replace("#", "&num;")
 }
 
 //Example
