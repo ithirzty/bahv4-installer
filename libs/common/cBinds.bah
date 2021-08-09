@@ -18,7 +18,7 @@
 #define strcmp(a cpstring, b cpstring) int
 #define sprintf(buff cpstring, format cpstring, v ptr)
 #define atoi(s cpstring) int
-#define itoa(i int, s cpstring, base int)
+#define itoa(i int, s cpstring, base int) cpstring
 #define sigaction(sig int, str ptr*, m int)
 #define waitpid(m int, s int*, w int) int
 #define fork() int

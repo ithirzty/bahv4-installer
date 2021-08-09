@@ -5,7 +5,7 @@
 
 #define GC_INIT()
 #define GC_MALLOC(s int) ptr
-#define GC_REALLOC(p ptr, s int)
+#define GC_REALLOC(p ptr, s int) ptr
 #define GC_FREE(a ptr)
 
 const SIZE_OF_INT = 8
@@ -70,8 +70,9 @@ append(a ptr, b ptr) {
 
 //Will realloc memory to a specified pointer.
 //*The data contained in the block of memory is not necessarly preserved.*
-memoryRealloc(p ptr, s int) {
-    GC_REALLOC(p,s)
+memoryRealloc(p ptr, s int) ptr {
+    np = GC_REALLOC(p,s)
+    return np
 }
 
 #define mmap(addr int, ps int, prot int, flags int, fd int, offset int) ptr

@@ -109,8 +109,7 @@ struct string {
     //Appends the specified cpstring to the string.
     append(s cpstring) {
         this.length = this.length + strlen(s)
-        tmpS cpstring = memoryAlloc(this->length)
-        strcpy(tmpS, this->content)
+        tmpS cpstring = memoryRealloc(this->content, this->length)
         strcat(tmpS, s)
         this.content = tmpS
     }
@@ -340,6 +339,15 @@ intToString(i int) string {
     return r
 }
 
+//Converts an int into a cpstring.
+//This is faster than intToString.
+intToStr(i int) cpstring {
+    buff cpstring = memoryAlloc(SIZE_OF_INT * 8 + 1)
+    sprintf(buff, "%ld", <ptr>i)
+    return buff
+}
+
+
 //Used to convert a string into an integer.
 //*It takes a string, not a cpstring*
 stringToInt(s string) int {
@@ -476,18 +484,18 @@ splitStringBefore(s string, sp cpstring) cpstring {
 
 }
 
-//Used to lowe-case a string.
+//Used to lower-case a string.
 toLower(s string) string {
-    ns = string("")
+    ns = []char
     i=0;for i < s.length {
         c = s.charAt(i)
         if isUpper(c) {
             c = c + <char>32
         }
-        ns.append(charToString(c))
+        ns[len(ns)] = c
         i = i + 1
     }
-    return ns
+    return string(arrToStr(ns))
 }
 
 //Example
