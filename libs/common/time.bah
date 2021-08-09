@@ -31,6 +31,22 @@ struct time {
     }
 }
 
+struct! timespec {
+    tv_sec: int
+    tv_nsec: int
+}
+
+#define timespec_get(ts timespec*, mode int)
+
+//Returns the current timestamp in nanoseconds.
+//One nano second looks like this: 0000000000000000001.
+getTimeUnix() int {
+    ts = timespec{}
+    timespec_get(&ts, noCheck(TIME_UTC))
+    s = ts.tv_sec * 1000000000 + ts.tv_nsec
+    return s
+}
+
 //Example
 // #include "iostream.bah"
 // #include "time.bah"

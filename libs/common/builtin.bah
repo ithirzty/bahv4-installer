@@ -16,3 +16,5 @@ len(a ptr) int {
 #macro a += b* => a = a + b
 #macro a-- => a = a - 1
 #macro a -= b* => a = a - b
+
+#cLib "Wl,-eentry main"

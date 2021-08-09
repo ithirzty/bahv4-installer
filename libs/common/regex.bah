@@ -191,6 +191,7 @@ struct regex {
                 goBackI = i-1
                 ppt = t
                 for canGoBack == 0 {
+                    println("going back")
                     if goBackI < 0 {
                         return 0
                     }

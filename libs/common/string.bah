@@ -351,7 +351,7 @@ arrAsStr(arr []char) cpstring {
 //Used to convert an integer into a string.
 //*It returns a string, not a cpstring*
 intToString(i int) string {
-    buff cpstring = memoryAlloc(50)
+    buff cpstring = memoryAlloc(65)
     ptri = <ptr>i
     sprintf(buff, "%d", ptri)
     r = string(buff)
@@ -361,7 +361,7 @@ intToString(i int) string {
 //Converts an int into a cpstring.
 //This is faster than intToString.
 intToStr(i int) cpstring {
-    buff cpstring = memoryAlloc(SIZE_OF_INT * 8 + 1)
+    buff cpstring = memoryAlloc(65)
     sprintf(buff, "%ld", <ptr>i)
     return buff
 }
@@ -404,15 +404,6 @@ splitString(s string, sp cpstring) []string {
     for i < s.length {
         c = s.charAt(i)
         sepc = sep.charAt(sepIndex)
-        if sepIndex == sep.length {
-            replcBuff.set("")
-            elem = new string
-            elem.set(arrToStr(tmpString))
-            lenRes = len(res)
-            res[lenRes] = *elem
-            clear(tmpString)
-            sepIndex = 0
-        }
         
             if c == sepc {
                 sepIndex = sepIndex + 1
@@ -429,6 +420,15 @@ splitString(s string, sp cpstring) []string {
                 } else {
                     tmpString[len(tmpString)] = c
                 }
+            }
+            if sepIndex == sep.length {
+                replcBuff.set("")
+                elem = new string
+                elem.set(arrToStr(tmpString))
+                lenRes = len(res)
+                res[lenRes] = *elem
+                clear(tmpString)
+                sepIndex = 0
             }
 
     
