@@ -12,8 +12,12 @@ To install bah on your machine, do the following
 
 ### Linux
 
+If not already downloaded, run the following command:
 ```sh
 git clone https://github.com/ithirzty/bahv4-installer
+```
+
+```sh
 cd ./bahv4-installer
 chmod +x ./install_linux.sh
 ./install_linux.sh
