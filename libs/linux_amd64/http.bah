@@ -666,7 +666,6 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
 
         line = lines[i]
         if isBody {
-            
             s = string(line)
             if i < max {
                 s.append("\r\n")
@@ -675,10 +674,13 @@ makeRawRequest(method cpstring, u http_url, args []cpstring) http_response {
             i = i + 1
             continue
         }
-        if line.hasPrefix("\r\n") {
-            isBody = 1
-            line.trimLeft(2)
-            continue
+        if i > 0 {
+            pl = lines[i-1]
+            if strlen(pl) == 0 {
+                isBody = 1
+                line.trimLeft(2)
+                continue
+            }
         }
 
         header = new string

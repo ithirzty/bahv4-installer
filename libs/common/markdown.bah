@@ -26,76 +26,58 @@ struct markdown {
     //To retreive the document as lines without transpilling it to any other language.
     //This is mainly for debugging/verbose purposes.
     str() cpstring {
-        s = string("")
+        s = ""
         i=0;for i < len(this.lines) {
             mdl = this.lines[i]
-            l = intToString(i)
-            l.append(": ")
-            l.append(mdl.line)
-            l.append("\n")
-            s.append(l)
+            si = intToStr(i)
+            l = mdl.line.str()
+            s = s + si + ": " + l + "\n"
             i++
         }
 
-        r = s.str()
-        return r
+        return s
     }
 
     //To transpille your markdown document as a html document.
     //This will return a cpstring containning your markdown document as html code.
     html() cpstring {
-        html = string("<p>")
+        html = "<p>"
 
         i=0;for i < len(this.lines) {
             mdl = this.lines[i]
-            l = string(mdl.line)
+            l = mdl.line.str()
 
             if mdl.type == 1 {
-                l.prepend("<h1>")
-                l.append("</h1><hr>")
+                html = html + "<h1>"+l+"</h1><hr>"
             } else if mdl.type == 2 {
-                l.prepend("<h2>")
-                l.append("</h2><hr>")
+                html = html + "<h2>"+l+"</h2><hr>"
             } else if mdl.type == 3 {
-                l.prepend("<h3>")
-                l.append("</h3>")
+                html = html + "<h3>"+l+"</h3>"
             } else if mdl.type == 4 {
-                l.prepend("<h4>")
-                l.append("</h4>")
+                html = html + "<h4>"+l+"</h4>"
             } else if mdl.type == 5 {
-                l.prepend("<h5>")
-                l.append("</h5>")
+                html = html + "<h5>"+l+"</h5>"
             } else if mdl.type == 6 {
-                l.prepend("<h6>")
-                l.append("</h6>")
+                html = html + "<h3>"+l+"</h3>"
             } else if mdl.type == 7 {
-                l.prepend("&nbsp;• ")
-                l.append("<br>")
+                html = html + "&nbsp;• "+l+"<br>"
             } else if mdl.type == 8 {
-                l.prepend("    ")
+                html = html + "\t"+l
             } else if mdl.type == 9 {
-                l.prepend("<blockquote>")
-                l.append("</blockquote>")
+                html = html + "<blockquote>"+l+"</blockquote>"
             } else if mdl.type == 10 {
-                ftag = string("<pre class=\"highlight highlight-source-")
-                ftag.append(mdl.rel)
-                ftag.append("\">")
-                l.prepend(ftag)
-                l.append("</pre>")
-
+                rel = mdl.rel.str()
+                html = html + "<pre class=\"highlight highlight-source-"+rel+"\">"+l+"</pre>"
             } else {
-                //l.prepend("<p>")
-                l.append("</br>")
+                html = html + l + "<br>"
             }
 
-            l.append("\n")
-            html.append(l)
+            html += "\n"
 
             i++
         }
-        html.append("</p>")
-        r = html.str()
-        return r
+        html += "</p>"
+        return html
     }
 
 }
