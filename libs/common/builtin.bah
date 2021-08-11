@@ -24,11 +24,22 @@ len(a ptr) int {
 #define strncpy(a cpstring, b cpstring, l int)
 #define strcat(a cpstring, b cpstring)
 
+//Function used by the compiler when concatenating cpstrings.
+//You can use it as a function or do cpstring+cpstring.
 concatCPSTRING(a cpstring, b cpstring) cpstring {
 	lenA = strlen(a)
 	lenB = strlen(b)
 	r cpstring = memoryAlloc(lenA + lenB + 1)
 	strncpy(r,a,lenA)
 	strcat(r,b)
+	return r
+}
+
+//Funcion used by the compiler to declare a cpstring.
+//It allocates memory for the cpstring.
+__STR(a cpstring) cpstring {
+	lenA = strlen(a)
+	r = memoryAlloc(lenA+1)
+	strncpy(r,a,lenA)
 	return r
 }
