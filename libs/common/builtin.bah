@@ -1,4 +1,5 @@
 #include "<signal.h>"
+#include "<string.h>"
 #include "memory.bah"
 
 //Will return the length of an array.
@@ -18,3 +19,16 @@ len(a ptr) int {
 #macro a -= b* => a = a - b
 
 #cLib "Wl,-eentry main"
+
+#define strlen(a cpstring) int
+#define strncpy(a cpstring, b cpstring, l int)
+#define strcat(a cpstring, b cpstring)
+
+concatCPSTRING(a cpstring, b cpstring) cpstring {
+	lenA = strlen(a)
+	lenB = strlen(b)
+	r cpstring = memoryAlloc(lenA + lenB + 1)
+	strncpy(r,a,lenA)
+	strcat(r,b)
+	return r
+}

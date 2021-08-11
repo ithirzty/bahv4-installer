@@ -97,7 +97,7 @@ struct fileStream {
         c = getc(this.handle)
         i = 0
         s = []char
-        for c != EOF {
+        for c != <char>noCheck(EOF) {
             s[len(s)] = c
             i = i + 1
             c = getc(this.handle)

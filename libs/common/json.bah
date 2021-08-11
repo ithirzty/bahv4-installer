@@ -56,7 +56,7 @@ parseJson(a cpstring) jsonElement* {
         jsonElem.type = JSON_TYPE_ARRAY
     } else if fc == '{' {
         jsonElem.type = JSON_TYPE_MAP
-    } else if fc == 34 {
+    } else if fc == <char>34 {
         jsonElem.type = JSON_TYPE_STRING
         s.trimLeft(1)
         s.trimRight(1)
@@ -82,7 +82,7 @@ parseJson(a cpstring) jsonElement* {
         elemIndex = 0
         i = 0; for i < s.length {
             c = s.charAt(i)
-            if c == 34 {
+            if c == <char>34 {
                 if currentQuotes == 0 {
                     currentQuotes = 1
                 } else {
@@ -130,7 +130,7 @@ parseJson(a cpstring) jsonElement* {
         elemIndex = 0
         i = 0; for i < s.length {
             c = s.charAt(i)
-            if c == 34 {
+            if c == <char>34 {
                 if currentQuotes == 0 {
                     currentQuotes = 1
                 } else {

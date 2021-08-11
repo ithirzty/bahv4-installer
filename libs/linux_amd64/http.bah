@@ -268,7 +268,7 @@ struct http_request {
             c = req.charAt(i)
             if found == 0 {
                 if isValue {
-                if c == 10 {
+                if c == <char>10 {
                     isValue = 0
                 }
                 } else {
@@ -285,7 +285,7 @@ struct http_request {
                     }
                 }
             } else {
-                if c == 13 {
+                if c == <char>13 {
                     break
                 }
                 cs = charToString(c)
@@ -338,7 +338,7 @@ http_request(connfd int) http_request {
     for i < req.length {
         c = req.charAt(i)
         i = i + 1
-        if c == 10 {
+        if c == <char>10 {
             break
         }
     }

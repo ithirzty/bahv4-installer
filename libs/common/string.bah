@@ -22,8 +22,8 @@ charToString(c char) cpstring {
 
 //Used to know if a char is upper-cased, will return 1 if true.
 isUpper(c char) int {
-    if c > 64 {
-        if c < 91 {
+    if c > <char>64 {
+        if c < <char>91 {
             return 1
         }
     }
@@ -32,8 +32,8 @@ isUpper(c char) int {
 
 //Used to know if a char is lower-cased, will return 1 if true.
 isLower(c char) int {
-    if c > 96 {
-        if c < 123 {
+    if c > <char>96 {
+        if c < <char>123 {
             return 1
         }
     }
@@ -53,8 +53,8 @@ isLetter(s char) int {
 
 //Used to know if a char is a number, will return 1 if true.
 isNumber(c char) int {
-    if c > 47 {
-        if c < 58 {
+    if c > <char>47 {
+        if c < <char>58 {
             return 1
         }
     }
@@ -75,19 +75,19 @@ isAlphaNumeric(s char) int {
 
 //Used to know if a char is a space / new line character, will return 1 if true.
 isSpace(c char) int {
-    if c == 32 {
+    if c == <char>32 {
         return 1
     }
-    if c == 9 {
+    if c == <char>9 {
         return 1
     }
-    if c == 10 {
+    if c == <char>10 {
         return 1
     }
-    if c == 11 {
+    if c == <char>11 {
         return 1
     }
-    if c == 13 {
+    if c == <char>13 {
         return 1
     }
 
@@ -110,7 +110,7 @@ struct string {
     append(s cpstring) {
         this.length = this.length + strlen(s)
         tmpS cpstring = memoryRealloc(this->content, this->length)
-        if tmpS == 0 {
+        if <int>tmpS == 0 {
             tmpS = memoryAlloc(this->length)
             strncpy(tmpS, this->content, this->length)
         }
