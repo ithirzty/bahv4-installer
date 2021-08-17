@@ -4,8 +4,8 @@
 
 Bah is for the moment compatible with the following:
 - **linux (x86_64)**
+- **macos (after core 2 duo)**
 - (soon windows, just need to refactor some libs and it will be there)
-- (soon macos, will come really fast as it is also a unix system)
 
 ## Installation
 To install bah on your machine, do the following
