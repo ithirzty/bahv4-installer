@@ -38,7 +38,7 @@ struct! XFontStruct {
 #define XFillRectangle(d Display*, w Window, gc GC, x int, y int, w int, h int)
 #define XDrawString(d Display*, w Window, gc GC, x int, y int, s cpstring, l int)
 #define XDefaultColormap(d Display*,s int) Colormap
-#define XAllocColor(d Display*,cmap Colormap,cc XColor*)
+#define XAllocColor(d Display*,cmap Colormap,cc XColor*) int
 #define XSetForeground(d Display*,gc GC,p uint)
 #define XSetBackground(d Display*,gc GC,p uint)
 #define XCreateGC(d Display*,w Window,ma int,mb int)
@@ -487,11 +487,11 @@ struct graphicApp {
         // s = intToString(<int>key)
         // println(s)
         text = string(this.focusElem.content)
-        if key == 8 {
+        if key == <char>8 {
             if text.length > 0 {
                 text.trimRight(1)
             }
-        } else if key == 13 {
+        } else if key == <char>13 {
             this.focusElem.handle(this)
         } else {
             text.append(charToString(key))
@@ -552,6 +552,7 @@ struct graphicApp {
         //XFlush(this.d)
         createEvt = new winEvent
         createEvt.type = WIN_EVENT_CREATE
+        this.setFont("*")
         this.handle(createEvt)
         for this.exit == 0 {
 
