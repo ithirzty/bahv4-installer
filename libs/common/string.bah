@@ -198,6 +198,10 @@ struct string {
         }
         r cpstring
         noCheck(r = buff->data)
+        if replcBuff.length > 0 {
+            replbuffStr = replcBuff.str()
+            r += replbuffStr
+        }
         this.set(r)
     }
 
@@ -460,11 +464,15 @@ joinString(a []string, sep cpstring) string {
     max = len(a) - 1
     for i < len(a) {
         e = a[i]
-        tmpS = string(e.content)
+        if e.length == 0 {
+            i++
+            continue
+        }
+        tmpS = string(e)
         if i != max {
             tmpS.append(sep)
         }
-        s.append(tmpS.content)
+        s.append(tmpS)
         i = i + 1
     }
     return s

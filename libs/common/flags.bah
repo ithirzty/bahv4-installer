@@ -101,7 +101,8 @@ struct flags {
             }
             i = i + 1
         }
-        z = <ptr>0
+        z = new flag
+        z.isSet = 0
         return z
     }
 
