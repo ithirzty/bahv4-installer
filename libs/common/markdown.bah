@@ -86,6 +86,9 @@ struct markdown {
 //Inline elements are syntax features that do not impact the entire line.
 //For instance, the bold delimiter is an inline feature, the hastag at the biginning of a line is not.
 parseMarkdownInline(l string) string {
+    if l.length == 0 {
+        return l
+    }
     nl = []char
     
     
@@ -254,7 +257,7 @@ parseMarkdownInline(l string) string {
         i++
     }
 
-    r = string(arrAsStr(nl))
+    r = string(arrToStr(nl))
 
     return r
 }

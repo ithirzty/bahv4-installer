@@ -104,7 +104,7 @@ struct fileStream {
         }
         s[len(s)] = <char>0
         ls = len(s)
-        r cpstring
+        r = ""
         noCheck(r = s->data)
         return r
     }

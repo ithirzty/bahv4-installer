@@ -130,12 +130,12 @@ struct string {
 
     //Returns the char at the specified position of the string.
     charAt(i int) char {
+        c = <char>0
         if i<this.length {
-            c char
             noCheck(c = this->content[i])
             return c
         }
-        return <char>0
+        return c
     }
 
     //Used to know if the content of the string is the same as the specified cpstring, returns 1 if true.
@@ -196,7 +196,7 @@ struct string {
 
             i = i + 1
         }
-        r cpstring
+        r = ""
         noCheck(r = buff->data)
         if replcBuff.length > 0 {
             replbuffStr = replcBuff.str()
@@ -337,8 +337,10 @@ arrToStr(arr []char) cpstring {
 strToArr(str cpstring) []char {
     strLen = strlen(str)
     arr = []char
+    noCheck(arr->data = memoryAlloc(strLen+1))
     noCheck(memcpy(arr->data, str, strLen))
     noCheck(arr->length = strLen)
+    
     return arr
 }
 
@@ -347,7 +349,7 @@ strToArr(str cpstring) []char {
 //This is faster but changing the content of the returnend cpstring will change the content of the array.
 //You can see this operation as linkning the same data through two different interfaces, the only difference between these two interfaces are their type.
 arrAsStr(arr []char) cpstring {
-    r cpstring
+    r = ""
     noCheck(r = arr->data)
     return r
 }

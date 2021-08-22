@@ -5,7 +5,7 @@
 //Will return the length of an array.
 //This only works on arrays.
 len(a ptr) int {
-    i int
+    i = 0
     noCheck(array(void*) * arr = a)
     noCheck(i = arr->length)
     return i

@@ -40,10 +40,10 @@ clear(a ptr) {
 append(a ptr, b ptr) {
     noCheck(array(void*) * arrA = a)
     noCheck(array(void*) * arrB = b)
-    lenA int
-    lenB int
-    realSizeA int
-    realSizeB int
+    lenA = 0
+    lenB = 0
+    realSizeA = 0
+    realSizeB = 0
     noCheck(lenA = len(arrA))
     noCheck(lenB = len(arrB))
 
