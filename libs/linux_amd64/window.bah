@@ -52,6 +52,8 @@ struct! XFontStruct {
 #define XDrawArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
 #define XFillArc(d Display*, w Window, gc GC, x int, y int, w int, h int, a1 int, a2 int)
 #define XLookupString(evt XEvent*, buff cpstring, len int, key KeySym*, status int)
+#define XSendEvent(d Display*, w Window, propagate int, event_mask int, event XEvent*)
+#define XSync(d Display*, discard int)
 keysym KeySym = <KeySym>418
 
 struct winEvent {
@@ -205,10 +207,6 @@ struct graphicApp {
         this.exit = 1
     }
 
-    clear() {
-        XFlush(this.d)
-        XClearArea(this.d,this.w,0,0,this.windowWidth,this.windowHeight,1)
-    }
 
     fillRect(x int, y int, w int, h int) {
         XFillRectangle(this.d, this.w, this.gc, x, y, w, h)
@@ -326,7 +324,6 @@ struct graphicApp {
         return elem
     }
 
-
     drawElems() {
         i=0; for i < len(this.elems) {
             ptr = this.elems[i]
@@ -393,6 +390,11 @@ struct graphicApp {
             }else if ptr.type == 1 {
                 //draw text input
                 text = string(ptr.content)
+
+                if ptr == this.focusElem {
+                    text.append("|")
+                }
+
                 for textWidth >= ptr.width {
                     text.trimLeft(1)
                     textWidth = XTextWidth(this.currentFont, text, text.length)
@@ -440,15 +442,22 @@ struct graphicApp {
                     b = ptr.text.color.b
                 }
                 this.setColor(r,g,b)
-                if ptr == this.focusElem {
-                    text.append("|")
-                }
                 this.text(ptr.x+5,ptr.y+ptr.height/2+4,text)
             }
 
             i = i + 1
         }
     }
+    
+    clear() {
+        // XFlush(this.d)
+        // println("flush")
+        XClearArea(this.d,this.w,0,0,this.windowWidth,this.windowHeight,0)
+        this.drawElems()
+        XFlush(this.d)
+    }
+
+
 
     clickElems(x int, y int) {
         found = 0
@@ -555,7 +564,6 @@ struct graphicApp {
         this.setFont("*")
         this.handle(createEvt)
         for this.exit == 0 {
-
             XNextEvent(this.d,&e)
             evt = new winEvent
             noCheck(evt->type = e.type)
@@ -566,6 +574,7 @@ struct graphicApp {
 
             if evt.type == WIN_EVENT_DRAW {
                 this.drawElems()
+                println("draw")
             } else if evt.type == WIN_EVENT_CLICK {
                 this.clickElems(evt.clickX, evt.clickY)
             } else if evt.type == WIN_EVENT_KEYPRESS {
@@ -580,9 +589,12 @@ struct graphicApp {
             }
 
             this.handle(evt)
-            //XFlush(this.d)
-            //XFlush(this.d)
-            
+
+            if evt.type == WIN_EVENT_DRAW {
+                XFlush(this.d)        
+                println("flush")
+            }
+
         }
         XCloseDisplay(this.d)
     }

@@ -51,7 +51,6 @@ parseJson(a cpstring) jsonElement* {
     jsonElem = new jsonElement
 
     fc = s.charAt(0)
-    jsonElem.content = s.str()
     if fc == '[' {
         jsonElem.type = JSON_TYPE_ARRAY
     } else if fc == '{' {
@@ -67,8 +66,10 @@ parseJson(a cpstring) jsonElement* {
         } else {
             jsonElem.type = JSON_TYPE_INT
         }
+        jsonElem.content = s.str()
     } else {
         jsonElem.type = JSON_TYPE_STRING
+        jsonElem.content = s.str()
     }
 
     if jsonElem.type == JSON_TYPE_ARRAY {
