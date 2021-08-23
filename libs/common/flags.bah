@@ -162,7 +162,7 @@ struct flags {
             if isVal {
                     currentFlag.content = argName.str()
                 if currentFlag.type == FLAG_TYPE_INT {
-                    currentFlag.cont_int = stringToInt(argName)
+                    currentFlag.cont_int = atoi(argName)
                 } else if currentFlag.type == FLAG_TYPE_FLOAT {
                     currentFlag.cont_float = strtod(argName, 0)
                 }

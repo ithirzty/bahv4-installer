@@ -733,7 +733,7 @@ get(url cpstring) http_response {
 }
 
 //Used for making simple post request with variables (args) formatted as name=value.
-post(url cpstring, args string) http_response {
+post(url cpstring, args []cpstring) http_response {
     r = makeRawRequest("POST", parseUrl(url), args)
     return r
 }
