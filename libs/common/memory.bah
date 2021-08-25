@@ -68,6 +68,18 @@ append(a ptr, b ptr) {
     noCheck(arrA->data = buff)
 }
 
+copy(a ptr, b ptr) {
+    noCheck(array(void*) * arrA = a)
+    noCheck(array(void*) * arrB = b)
+    lenB = 0
+    realSizeB = 0
+    noCheck(lenB = len(arrB))
+    noCheck(realSizeB = lenB * arrB->elemSize)
+    noCheck(arrA->data = memoryAlloc(realSizeB))
+    noCheck(memcpy(arrA->data, arrB->data, realSizeB))
+    noCheck(arrA->length = arrB->length)
+}
+
 //Will realloc memory to a specified pointer.
 //*The data contained in the block of memory is not necessarly preserved.*
 memoryRealloc(p ptr, s int) ptr {

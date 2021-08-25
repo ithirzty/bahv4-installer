@@ -2,8 +2,8 @@
 
 #cLib "lpthread"
 
-#define pthread_create(id int*, attr ptr, func ptr, args ptr)
-#define pthread_join(id int, ret ptr)
+#define GC_pthread_create(id int*, attr ptr, func ptr, args ptr)
+#define GC_pthread_join(id int, ret ptr)
 
 #define! pthread_mutex_t int
 
@@ -54,20 +54,20 @@ struct thread {
     //This will launch the thread.
     create() {
         z0 = <ptr>0
-        pthread_create(&this.id, z0, this.handle, z0)   
+        GC_pthread_create(&this.id, z0, this.handle, z0)   
     }
 
     //This will launch the thread by passing to its entry point funtion an argument.
     //The argument can only be a pointer.
     createWithArg(arg ptr) {
         z0 = <ptr>0
-        pthread_create(&this.id, z0, this.handle, arg)   
+        GC_pthread_create(&this.id, z0, this.handle, arg)   
     }
 
     //This waits until the thread has finished executting.
     wait() {
         z0 = <ptr>0
-        pthread_join(this.id, z0)
+        GC_pthread_join(this.id, z0)
     }
 }
 
