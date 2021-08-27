@@ -1,3 +1,13 @@
+# This is the compiler for the old compiler <br> [USE THE MORE RECENT ONE](https://github.com/ithirzty/bah)
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 # The [bah-lang](https://bah-lang.xyz) installer
 
 ## Compatibility
