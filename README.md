@@ -1,4 +1,4 @@
-# This is the compiler for the old compiler <br> [USE THE MORE RECENT ONE](https://github.com/ithirzty/bah)
+# This is the installer for the old compiler <br> [USE THE MORE RECENT ONE](https://github.com/ithirzty/bah)
 <br>
 <br>
 <br>
